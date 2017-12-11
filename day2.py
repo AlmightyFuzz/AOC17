@@ -70,7 +70,7 @@ def findDivisableNums(inList):
             if x % j == 0:
                 a = x
                 b = j
-            elif j% x == 0:
+            elif j % x == 0:
                 a = j
                 b = x
 

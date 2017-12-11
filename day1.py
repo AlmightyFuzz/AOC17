@@ -8,20 +8,18 @@ puzzleInput = "87893823215734275675425471658697512539486529734932123658657466299
 
 #Compare two consecutive digits to see if they match.
 #Match the last digit to the first
-def captcha1(inStr):
-    nextPos = 1
+def captcha(inStr):
     total = 0
     
-    for char in inStr:
-        
-        if nextPos == len(inStr):
+    for pos, char in enumerate(inStr):
+
+        #if at the end of the string look at the first
+        if pos+1 == len(inStr):
             if char == inStr[0]:
                 total += int(char)
         else:
-            if char == inStr[nextPos]:
+            if char == inStr[pos+1]:
                 total += int(char)
-
-        nextPos += 1
 
     return total
 
@@ -29,21 +27,19 @@ def captcha1(inStr):
 #Wrap around to start of string when you've reached the end.
 def captcha2(inStr):
     strLength = len(inStr)
-    nextCharStep = int(strLength / 2)
-    pos = 0
+    charStep = int(strLength / 2)
     total = 0
     
-    for char in inStr:
-        nextCharPos = pos + nextCharStep
+    for pos, char in enumerate(inStr):
+        otherCharPos = pos + charStep
 
-        if nextCharPos >= strLength:
-            if char == inStr[nextCharPos - strLength]:
+        # Loop around if you've the end of the string
+        if otherCharPos >= strLength:
+            if char == inStr[otherCharPos - strLength]:
                 total += int(char)
         else:
-            if char == inStr[nextCharPos]:
+            if char == inStr[otherCharPos]:
                 total += int(char)
-                
-        pos += 1
 
     return total
 
