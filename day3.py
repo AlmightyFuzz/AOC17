@@ -17,17 +17,19 @@ def SpiralMemory(targetNum):
     direc = Direction.East
     point = Point(0,0)
     count = 1
+    cellValue = 0
+
+    spiralData = {}
+    #str(Point(xVal,yVal)) converts the point to the string '[xVal,yVal]'
+    #spiralData[str(Point(0,0))] = 3
 
     #Initialise the first turning number    
     turningNumGen = getNextTurningNum()
     turningNum = next(turningNumGen)
 
-
     while count < targetNum:
-        
-        if count == turningNum:
-            direc = changeDirection(direc)
-            turningNum = next(turningNumGen)
+        print(str(point)+'\t{0}'.format(count))
+        print(direc)
 
         if direc == Direction.East:
             point.X += 1
@@ -38,11 +40,36 @@ def SpiralMemory(targetNum):
         elif direc == Direction.South:
             point.Y -= 1
 
+        if count == turningNum:
+            direc = changeDirection(direc)
+            turningNum = next(turningNumGen)
+
+        print(point)
+
+        cellValue = findCellValue(point,spiralData)
+
+        spiralData[str(point)] = cellValue
+
         count += 1
 
     steps = abs(point.X) + abs(point.Y)
 
     return steps
+
+#Check the 8 adjacent cells for their values. If there is no value for that cell
+#then just carry on to the next. So long as this done for each cell as you work
+#your way around the spiral then it should find the correct values, as the blank
+#adjacent cells are just ones we haven't reached yet and therefore dont care about
+def findCellValue(point, spiralData):
+    cellValue = 0
+    pX, pY = point.X, point.Y
+
+    #print(pX,pY)
+    otherPoint = Point(point.X,point.Y)
+
+    
+
+    return cellValue
 
 # Returns the next direction to travel in depending on the direction given to it
 # ie. anti-clockwise
@@ -92,15 +119,16 @@ class Point(object):
         return "[{0},{1}]".format(self.X,self.Y)
 
 class Direction(Enum):
+    #Note auto() requires Python 3.6+
     North = auto()
     East = auto()
     South = auto()
     West = auto()
 
-if __name__ == '__main__':
+if __name__ == '__main__':    
     #print(SpiralMemory(test1)) #0
-    #print(SpiralMemory(test2)) #3
+    print(SpiralMemory(test2)) #3
     #print(SpiralMemory(test3)) #2
     #print(SpiralMemory(test4)) #31
 
-    print(SpiralMemory(puzzleInput))
+    #print(SpiralMemory(puzzleInput))
