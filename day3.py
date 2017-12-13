@@ -13,14 +13,14 @@ test4 = 1024 #31
 # at which point it uses its 2D point to work out the distance back to the start
 
 def SpiralMemory(targetNum):
-    #Start at value of 1, represented as (0,0), with starting direction being East
+    #Start at value of 1, represented as [0,0], with starting direction being
+    #South so that it turns to face the correct direction at the start.
     direc = Direction.South
     point = Point(0,0)
     count = 1
+    
     cellValue = 0
-
     spiralData = {}
-    #str(Point(xVal,yVal)) converts the point to the string '[xVal,yVal]'
 
     #Initialise the first turning number    
     turningNumGen = getNextTurningNum()
@@ -49,6 +49,7 @@ def SpiralMemory(targetNum):
         else:
             cellValue = findCellValue(point,spiralData)
 
+        #str(Point(xVal,yVal)) converts the point to the string '[xVal,yVal]'
         spiralData[str(point)] = cellValue
 
         count += 1
@@ -68,8 +69,6 @@ def SpiralMemory(targetNum):
 #adjacent cells are just ones we haven't reached yet and therefore dont care about
 def findCellValue(point, spiralData):
     newCellValue = 0
-    pX, pY = point.X, point.Y
-
     otherPoint = Point(point.X,point.Y)
 
     for i in range(8):
@@ -92,6 +91,7 @@ def findCellValue(point, spiralData):
 # Returns the next direction to travel in depending on the direction given to it
 # ie. anti-clockwise
 def changeDirection(direction):
+    
     if direction == Direction.North:
         return Direction.West
     elif direction == Direction.West:
@@ -102,9 +102,9 @@ def changeDirection(direction):
         return Direction.North
 
 # The 'turning numbers' (ie, where the direction of travel changes)
-# are 1,2,3,5,7,10,13,17,etc.
+# are 1,2,3,5,7,10,13,17,etc. The generator produces that sequence of numbers
 # The differnce betweeen the those numbers
-# are 1,1,2,2,3,3,4,etc.
+# are 1,1,2,2,3,3,4,etc which the generator() generator produces.
 def getNextTurningNum():
     nextNum = 1
     gen = generator()
