@@ -14,12 +14,12 @@ test4 = 1024 #31
 
 def SpiralMemory(targetNum):
     #Start at value of 1, represented as (0,0), with starting direction being East
-    direc = Direction.East
+    direc = Direction.South
     point = Point(0,0)
     count = 1
     cellValue = 0
 
-    spiralData = {}
+    spiralData = {str(point): 1}
     #str(Point(xVal,yVal)) converts the point to the string '[xVal,yVal]'
     #spiralData[str(Point(0,0))] = 3
 
@@ -27,28 +27,27 @@ def SpiralMemory(targetNum):
     turningNumGen = getNextTurningNum()
     turningNum = next(turningNumGen)
 
-    while count < targetNum:
-        print(str(point)+'\t{0}'.format(count))
-        print(direc)
+    while count <= targetNum:
 
-        if direc == Direction.East:
-            point.X += 1
-        elif direc == Direction.North:
-            point.Y += 1
-        elif direc == Direction.West:
-            point.X -= 1
-        elif direc == Direction.South:
-            point.Y -= 1
+        if count == 1:
+            point.X, point.Y = 0, 0
+        else:
+            if direc == Direction.East:
+                point.X += 1
+            elif direc == Direction.North:
+                point.Y += 1
+            elif direc == Direction.West:
+                point.X -= 1
+            elif direc == Direction.South:
+                point.Y -= 1
 
         if count == turningNum:
             direc = changeDirection(direc)
             turningNum = next(turningNumGen)
 
-        print(point)
+        #cellValue = findCellValue(point,spiralData)
 
-        cellValue = findCellValue(point,spiralData)
-
-        spiralData[str(point)] = cellValue
+        #spiralData[str(point)] = cellValue
 
         count += 1
 
