@@ -19,9 +19,8 @@ def SpiralMemory(targetNum):
     count = 1
     cellValue = 0
 
-    spiralData = {str(point): 1}
+    spiralData = {}
     #str(Point(xVal,yVal)) converts the point to the string '[xVal,yVal]'
-    #spiralData[str(Point(0,0))] = 3
 
     #Initialise the first turning number    
     turningNumGen = getNextTurningNum()
@@ -44,12 +43,20 @@ def SpiralMemory(targetNum):
         if count == turningNum:
             direc = changeDirection(direc)
             turningNum = next(turningNumGen)
+            
+        if count == 1:
+            cellValue = 1
+        else:
+            cellValue = findCellValue(point,spiralData)
 
-        #cellValue = findCellValue(point,spiralData)
-
-        #spiralData[str(point)] = cellValue
+        spiralData[str(point)] = cellValue
 
         count += 1
+
+        #Part 2
+        if cellValue > targetNum:
+            print("Value:",cellValue)
+            break
 
     steps = abs(point.X) + abs(point.Y)
 
@@ -60,15 +67,27 @@ def SpiralMemory(targetNum):
 #your way around the spiral then it should find the correct values, as the blank
 #adjacent cells are just ones we haven't reached yet and therefore dont care about
 def findCellValue(point, spiralData):
-    cellValue = 0
+    newCellValue = 0
     pX, pY = point.X, point.Y
 
-    #print(pX,pY)
     otherPoint = Point(point.X,point.Y)
 
-    
+    for i in range(8):
+        if i == 0:
+            otherPoint.X += 1
+        elif i == 1:
+            otherPoint.Y -= 1
+        elif i in [2,3]:
+            otherPoint.X -= 1
+        elif i in [4,5]:
+            otherPoint.Y += 1
+        elif i in [6,7]:
+            otherPoint.X += 1
 
-    return cellValue
+        if str(otherPoint) in spiralData:
+            newCellValue += spiralData[str(otherPoint)]
+
+    return newCellValue
 
 # Returns the next direction to travel in depending on the direction given to it
 # ie. anti-clockwise
@@ -126,8 +145,8 @@ class Direction(Enum):
 
 if __name__ == '__main__':    
     #print(SpiralMemory(test1)) #0
-    print(SpiralMemory(test2)) #3
+    #print(SpiralMemory(test2)) #3
     #print(SpiralMemory(test3)) #2
     #print(SpiralMemory(test4)) #31
 
-    #print(SpiralMemory(puzzleInput))
+    print(SpiralMemory(puzzleInput))
