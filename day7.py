@@ -22,12 +22,8 @@ def buildProgramMap():
 
     programList = processData(programData)
 
-    supportingProgs = []
-
     #find all the programs that are holding up other programs
-    for prog in programList:
-        if prog.holdingUp != []:
-            supportingProgs.append(prog)
+    supportingProgs = [prog for prog in programList if prog.holdingUp != []]
     
     #foreach program that is holding up another,
     for sProg in supportingProgs:
@@ -77,10 +73,7 @@ def processTestInput(inData):
 def processInputFile():
     file = open('day7input.txt','r')
 
-    fileData = []
-    for line in file:
-        line = line.strip('\n')
-        fileData.append(line)
+    fileData = [line.strip('\n') for line in file]
 
     return fileData
     
