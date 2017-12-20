@@ -17,8 +17,8 @@ cntj (57)
 """
 
 def buildProgramMap():
-    programData = processTestInput(test1)
-    #programData = processPuzzleInput()
+    #programData = loadTestInput(test1)
+    programData = loadPuzzleInput()
 
     programList = processData(programData)
 
@@ -38,6 +38,7 @@ def buildProgramMap():
 
     return programList
 
+#Finds the programs whose weights don't balance
 def balanceTowers(programMap):
 
     for prog in programMap:
@@ -47,23 +48,26 @@ def balanceTowers(programMap):
 
     calculateWeights(baseProg)
 
-    for i in programMap:
-        print(i.name, i.totalWeight)
+    unbalancedProgs = []
 
-    #traverse(baseProg)
+    for p in programMap:
+        if p.holdingUp != []:
+            weight = p.holdingUp[0].totalWeight
+            
+            for i in p.holdingUp:
+                if i.totalWeight != weight:
+                    unbalancedProgs.append(p)
+                    break
 
-def traverse(prog):
+    for p in unbalancedProgs:
+        for i in p.holdingUp:
+            print(p.name+'\t', i.name, ':'+str(i.totalWeight)+':', str(i.weight), str(i.carriedWeight))
 
-    if prog.holdingUp == []:
-        print(prog.name, prog.weight)
-    else:
-        w = prog.holdingUp[0].weight
-        for p in prog.holdingUp:
-            if p.weight != w:
-                print('Weight mismatch')
-        for p in prog.holdingUp:
-            traverse(p)
+        print()
 
+    #You'll have to work out the answer from here on yourself by looking at the output
+        
+#Runs through the linked programs and calculates all their weights
 def calculateWeights(program):
 
     if program.holdingUp == []:
@@ -76,7 +80,8 @@ def calculateWeights(program):
         program.carriedWeight = cw
 
         return program.totalWeight
-    
+
+#Reads in the data and creates the program objects from that
 def processData(programData):
     programList = []
 
@@ -101,19 +106,20 @@ def processData(programData):
     
     return programList
 
-def processTestInput(inData):
+def loadTestInput(inData):
     inData = inData.strip('\n')
     inData = inData.split('\n')
     
     return inData
 
-def processPuzzleInput():
+def loadPuzzleInput():
     file = open('day7input.txt','r')
 
     fileData = [line.strip('\n') for line in file]
 
     return fileData
-    
+
+#Program Class definition
 class Program():
     def __init__(self, name):
         self.name = name
@@ -128,7 +134,9 @@ class Program():
 
     def __str__(self):
         return self.name
-    
+
+
+
 if __name__ == '__main__':
     programMap = buildProgramMap()
 
