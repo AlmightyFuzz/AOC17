@@ -1,12 +1,12 @@
-test1 = """5 1 9 5
+TEST1 = """5 1 9 5
 7 5 3
 2 4 6 8"""
 
-test2 = """5 9 2 8
+TEST2 = """5 9 2 8
 9 4 7 3
 3 8 6 5"""
 
-puzzleInput = """790	99	345	1080	32	143	1085	984	553	98	123	97	197	886	125	947
+PUZZLE_INPUT = """790	99	345	1080	32	143	1085	984	553	98	123	97	197	886	125	947
 302	463	59	58	55	87	508	54	472	63	469	419	424	331	337	72
 899	962	77	1127	62	530	78	880	129	1014	93	148	239	288	357	424
 2417	2755	254	3886	5336	3655	5798	3273	5016	178	270	6511	223	5391	1342	2377
@@ -23,50 +23,53 @@ puzzleInput = """790	99	345	1080	32	143	1085	984	553	98	123	97	197	886	125	947
 8447	203	1806	6777	278	2850	1232	6369	398	235	212	992	7520	7304	7852	520
 3928	107	3406	123	2111	2749	223	125	134	146	3875	1357	508	1534	4002	4417"""
 
-def convertDataToTable(inStr):
-    #Turn data into a list of rows
-    listOfRows = inStr.split('\n')
 
-    #Convert each row into list of ints, then add that list to an overall list
+def convert_data_to_table(in_str):
+    # Turn data into a list of rows
+    list_of_rows = in_str.split('\n')
+
+    # Convert each row into list of ints, then add that list to an overall list
     table = []
-    for row in listOfRows:
+    for row in list_of_rows:
         if ' ' in row:
             tmp = row.split(' ')
-            intList = []
-            
-            for i in tmp:
-                intList.append(int(i))
+            int_list = []
 
-            table.append(intList)
-            
+            for i in tmp:
+                int_list.append(int(i))
+
+            table.append(int_list)
+
         elif '\t' in row:
             tmp = row.split('\t')
-            intList = []
-            
-            for i in tmp:
-                intList.append(int(i))
+            int_list = []
 
-            table.append(intList)
+            for i in tmp:
+                int_list.append(int(i))
+
+            table.append(int_list)
 
     return table
 
-def findMaxAndMin(inList):
-    maxVal = max(inList)
-    minVal = min(inList)
 
-    return (maxVal,minVal)
+def find_max_and_min(in_list):
+    max_val = max(in_list)
+    min_val = min(in_list)
 
-def findDivisableNums(inList):
+    return (max_val, min_val)
+
+
+def find_divisable_nums(in_list):
     a = 0
     b = 0
 
-    #Foreach item in list
-    for i in range(len(inList)):
-        x = inList[i]
+    # Foreach item in list
+    for i in range(len(in_list)):
+        x = in_list[i]
 
-        #Foreach item the rest of the list
-        for j in inList[i+1:]:
-            #Check if nums divide into each other neatly
+        # Foreach item the rest of the list
+        for j in in_list[i + 1:]:
+            # Check if nums divide into each other neatly
             if x % j == 0:
                 a = x
                 b = j
@@ -74,27 +77,29 @@ def findDivisableNums(inList):
                 a = j
                 b = x
 
-    return (a,b)
+    return (a, b)
 
-def checksum(inData):
-    table = convertDataToTable(inData)
 
-    #Apply findMaxAndMin function to each element (ie row) in table
-    maxAndMins = list(map(findMaxAndMin,table))
+def checksum(in_data):
+    table = convert_data_to_table(in_data)
+
+    # Apply findMaxAndMin function to each element (ie row) in table
+    max_and_mins = list(map(find_max_and_min, table))
 
     total = 0
-    for tpl in maxAndMins:
+    for tpl in max_and_mins:
         total += int(tpl[0]) - int(tpl[1])
-    
+
     return total
 
-def checksum2(inData):
+
+def checksum2(in_data):
     total = 0
 
-    table = convertDataToTable(inData)
+    table = convert_data_to_table(in_data)
 
     for row in table:
-        tpl = findDivisableNums(row)
+        tpl = find_divisable_nums(row)
 
         if tpl[0] == 0 or tpl[1] == 0:
             total += 0
@@ -103,9 +108,10 @@ def checksum2(inData):
 
     return total
 
-if __name__ == '__main__':
-    #print(checksum(test1))
-    print(checksum2(test2))
 
-    #print(checksum(puzzleInput))
-    print(checksum2(puzzleInput))
+if __name__ == '__main__':
+    # print(checksum(TEST1))
+    print(checksum2(TEST2))
+
+    # print(checksum(puzzleInput))
+    print(checksum2(PUZZLE_INPUT))

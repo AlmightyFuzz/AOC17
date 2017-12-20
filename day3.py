@@ -1,32 +1,34 @@
+'''
+The program works by keeping track of the current position in the spiral
+memory sequence as a 2D point relative to the start point, and also keeps
+track of the direction of travel and at which values to change direction.
+It then just steps through the until it reaches the destination valuem,
+at which point it uses its 2D point to work out the distance back to the start
+'''
 from enum import Enum, auto
 
-puzzleInput = 325489
-test1 = 1    #0
-test2 = 12   #3
-test3 = 23   #2
-test4 = 1024 #31
+PUZZLE_INPUT = 325489
+TEST1 = 1  # 0
+TEST2 = 12  # 3
+TEST3 = 23  # 2
+TEST4 = 1024  # 31
 
-# The program works by keeping track of the current position in the spiral
-# memory sequence as a 2D point relative to the start point, and also keeps
-# track of the direction of travel and at which values to change direction.
-# It then just steps through the until it reaches the destination valuem,
-# at which point it uses its 2D point to work out the distance back to the start
 
-def SpiralMemory(targetNum):
-    #Start at value of 1, represented as [0,0], with starting direction being
-    #South so that it turns to face the correct direction at the start.
+def spiral_memory(target_num):
+    # Start at value of 1, represented as [0,0], with starting direction being
+    # South so that it turns to face the correct direction at the start.
     direc = Direction.South
-    point = Point(0,0)
+    point = Point(0, 0)
     count = 1
-    
-    cellValue = 0
-    spiralData = {}
 
-    #Initialise the first turning number    
-    turningNumGen = getNextTurningNum()
-    turningNum = next(turningNumGen)
+    cell_value = 0
+    spiral_data = {}
 
-    while count <= targetNum:
+    # Initialise the first turning number
+    turning_num_gen = get_next_turning_num()
+    turning_num = next(turning_num_gen)
+
+    while count <= target_num:
 
         if count == 1:
             point.X, point.Y = 0, 0
@@ -40,58 +42,63 @@ def SpiralMemory(targetNum):
             elif direc == Direction.South:
                 point.Y -= 1
 
-        if count == turningNum:
-            direc = changeDirection(direc)
-            turningNum = next(turningNumGen)
-            
-        if count == 1:
-            cellValue = 1
-        else:
-            cellValue = findCellValue(point,spiralData)
+        if count == turning_num:
+            direc = change_direction(direc)
+            turning_num = next(turning_num_gen)
 
-        #str(Point(xVal,yVal)) converts the point to the string '[xVal,yVal]'
-        spiralData[str(point)] = cellValue
+        if count == 1:
+            cell_value = 1
+        else:
+            cell_value = find_cell_value(point, spiral_data)
+
+        # str(Point(xVal,yVal)) converts the point to the string '[xVal,yVal]'
+        spiral_data[str(point)] = cell_value
 
         count += 1
 
-        #Part 2
-        if cellValue > targetNum:
-            print("Value:",cellValue)
+        # Part 2
+        if cell_value > target_num:
+            print('Value:', cell_value)
             break
 
     steps = abs(point.X) + abs(point.Y)
 
     return steps
 
-#Check the 8 adjacent cells for their values. If there is no value for that cell
-#then just carry on to the next. So long as this done for each cell as you work
-#your way around the spiral then it should find the correct values, as the blank
-#adjacent cells are just ones we haven't reached yet and therefore dont care about
-def findCellValue(point, spiralData):
-    newCellValue = 0
-    otherPoint = Point(point.X,point.Y)
+
+def find_cell_value(point, spiral_data):
+    '''
+    Check the 8 adjacent cells for their values. If there is no value for that cell
+    then just carry on to the next. So long as this done for each cell as you work
+    your way around the spiral then it should find the correct values, as the blank
+    adjacent cells are just ones we haven't reached yet and therefore dont care about
+    '''
+    new_cell_value = 0
+    other_point = Point(point.X, point.Y)
 
     for i in range(8):
         if i == 0:
-            otherPoint.X += 1
+            other_point.X += 1
         elif i == 1:
-            otherPoint.Y -= 1
-        elif i in [2,3]:
-            otherPoint.X -= 1
-        elif i in [4,5]:
-            otherPoint.Y += 1
-        elif i in [6,7]:
-            otherPoint.X += 1
+            other_point.Y -= 1
+        elif i in [2, 3]:
+            other_point.X -= 1
+        elif i in [4, 5]:
+            other_point.Y += 1
+        elif i in [6, 7]:
+            other_point.X += 1
 
-        if str(otherPoint) in spiralData:
-            newCellValue += spiralData[str(otherPoint)]
+        if str(other_point) in spiral_data:
+            new_cell_value += spiral_data[str(other_point)]
 
-    return newCellValue
+    return new_cell_value
 
-# Returns the next direction to travel in depending on the direction given to it
-# ie. anti-clockwise
-def changeDirection(direction):
-    
+
+def change_direction(direction):
+    '''
+    Turns anti-clockwise
+    '''
+
     if direction == Direction.North:
         return Direction.West
     elif direction == Direction.West:
@@ -101,32 +108,37 @@ def changeDirection(direction):
     elif direction == Direction.East:
         return Direction.North
 
-# The 'turning numbers' (ie, where the direction of travel changes)
-# are 1,2,3,5,7,10,13,17,etc. The generator produces that sequence of numbers
-# The differnce betweeen the those numbers
-# are 1,1,2,2,3,3,4,etc which the generator() generator produces.
-def getNextTurningNum():
-    nextNum = 1
+
+def get_next_turning_num():
+    '''
+    The 'turning numbers' (ie, where the direction of travel changes)
+    are 1,2,3,5,7,10,13,17,etc. The generator produces that sequence of numbers
+    The differnce betweeen the those numbers
+    are 1,1,2,2,3,3,4,etc which the generator() generator produces.
+    '''
+    next_num = 1
     gen = generator()
 
     while True:
-        yield nextNum
+        yield next_num
 
-        nextNum += next(gen)
+        next_num += next(gen)
 
-# Generates the sequence 1,1,2,2,3,3,4,4,5,5 etc
+
 def generator():
+    '''Generates the sequence 1,1,2,2,3,3,4,4,5,5 etc'''
     num = 1
-    flipFlop = False
+    flip_flop = False
 
     while True:
         yield num
 
-        if flipFlop == True:
+        if flip_flop is True:
             num += 1
-            flipFlop = False
+            flip_flop = False
         else:
-            flipFlop = True
+            flip_flop = True
+
 
 class Point(object):
     def __init__(self, x, y):
@@ -134,19 +146,21 @@ class Point(object):
         self.Y = y
 
     def __str__(self):
-        return "[{0},{1}]".format(self.X,self.Y)
+        return '[{0},{1}]'.format(self.X, self.Y)
+
 
 class Direction(Enum):
-    #Note auto() requires Python 3.6+
+    # Note auto() requires Python 3.6+
     North = auto()
     East = auto()
     South = auto()
     West = auto()
 
-if __name__ == '__main__':    
-    #print(SpiralMemory(test1)) #0
-    #print(SpiralMemory(test2)) #3
-    #print(SpiralMemory(test3)) #2
-    #print(SpiralMemory(test4)) #31
 
-    print(SpiralMemory(puzzleInput))
+if __name__ == '__main__':
+    # print(SpiralMemory(TEST1)) #0
+    # print(SpiralMemory(TEST2)) #3
+    # print(SpiralMemory(TEST3)) #2
+    # print(SpiralMemory(TEST4)) #31
+
+    print(spiral_memory(PUZZLE_INPUT))

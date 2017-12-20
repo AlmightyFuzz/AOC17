@@ -1,6 +1,6 @@
 import re
 
-test1 = """
+TEST1 = """
 pbga (66)
 xhth (57)
 ebii (61)
@@ -16,79 +16,83 @@ gyxo (61)
 cntj (57)
 """
 
-def buildProgramMap():
-    #programData = loadTestInput(test1)
-    programData = loadPuzzleInput()
 
-    programList = processData(programData)
+def build_program_map():
+    program_data = load_test_input(TEST1)
+    #program_data = load_puzzle_input()
 
-    #find all the programs that are holding up other programs
-    supportingProgs = [prog for prog in programList if prog.holdingUp != []]
-    
-    #foreach program that is holding up another,
-    for sProg in supportingProgs:
-        #get the names of those other programs,
-        for i,supportedProgName in enumerate(sProg.holdingUp):
-            #find the relevant program in the programList,
-            for mainProg in programList:
-                #then link those programs together
-                if supportedProgName == mainProg.name:
-                    mainProg.stoodOn = sProg
-                    sProg.holdingUp[i] = mainProg
+    program_list = process_data(program_data)
 
-    return programList
+    # find all the programs that are holding up other programs
+    supporting_progs = [prog for prog in program_list if prog.holding_up != []]
 
-#Finds the programs whose weights don't balance
-def balanceTowers(programMap):
+    # foreach program that is holding up another,
+    for s_prog in supporting_progs:
+        # get the names of those other programs,
+        for i, supported_prog_name in enumerate(s_prog.holding_up):
+            # find the relevant program in the programList,
+            for main_prog in program_list:
+                # then link those programs together
+                if supported_prog_name == main_prog.name:
+                    main_prog.stood_on = s_prog
+                    s_prog.holding_up[i] = main_prog
 
-    for prog in programMap:
-        if prog.stoodOn == None:
-            baseProg = prog
-            print('Base: ', baseProg.name)
+    return program_list
 
-    calculateWeights(baseProg)
 
-    unbalancedProgs = []
+def balance_towers(program_map):
+    '''Finds the programs whose weights don't balance'''
 
-    for p in programMap:
-        if p.holdingUp != []:
-            weight = p.holdingUp[0].totalWeight
-            
-            for i in p.holdingUp:
-                if i.totalWeight != weight:
-                    unbalancedProgs.append(p)
+    for prog in program_map:
+        if prog.stood_on is None:
+            base_prog = prog
+            print('Base: ', base_prog.name)
+
+    calculate_weights(base_prog)
+
+    unbalanced_progs = []
+
+    for p in program_map:
+        if p.holding_up != []:
+            weight = p.holding_up[0].total_weight
+
+            for i in p.holding_up:
+                if i.total_weight != weight:
+                    unbalanced_progs.append(p)
                     break
 
-    for p in unbalancedProgs:
-        for i in p.holdingUp:
-            print(p.name+'\t', i.name, ':'+str(i.totalWeight)+':', str(i.weight), str(i.carriedWeight))
+    for p in unbalanced_progs:
+        for i in p.holding_up:
+            print(p.name + '\t', i.name, ':' + str(i.total_weight) +
+                  ':', str(i.weight), str(i.carried_weight))
 
         print()
 
-    #You'll have to work out the answer from here on yourself by looking at the output
-        
-#Runs through the linked programs and calculates all their weights
-def calculateWeights(program):
+    # You'll have to work out the answer from here on yourself by looking at the output
 
-    if program.holdingUp == []:
+
+def calculate_weights(program):
+    '''Runs through the linked programs and calculates all their weights'''
+    if program.holding_up == []:
         return program.weight
     else:
         cw = 0
-        for prog in program.holdingUp:
-            cw += calculateWeights(prog)
-                
-        program.carriedWeight = cw
+        for prog in program.holding_up:
+            cw += calculate_weights(prog)
 
-        return program.totalWeight
+        program.carried_weight = cw
 
-#Reads in the data and creates the program objects from that
-def processData(programData):
-    programList = []
+        return program.total_weight
+
+
+def process_data(program_data):
+    '''Reads in the data and creates the program objects from that'''
+    program_list = []
 
     regex = r'(?P<name>[a-z]+)\s\((?P<weight>\d+)\)( -> (?P<progList>.*))?'
 
-    for item in programData:
-        match = re.match(regex,item)
+    for item in program_data:
+        match = re.match(regex, item)
         if not match:
             print('No Match found')
             continue
@@ -96,48 +100,49 @@ def processData(programData):
         prog = Program(match.group('name'))
         prog.weight = int(match.group('weight'))
         if match.group('progList'):
-            progList = match.group('progList')
-            progList = progList.replace(' ', '')
-            progList = progList.split(',')
-            
-            prog.holdingUp = list(progList)
+            prog_list = match.group('progList')
+            prog_list = prog_list.replace(' ', '')
+            prog_list = prog_list.split(',')
 
-        programList.append(prog)
-    
-    return programList
+            prog.holding_up = list(prog_list)
 
-def loadTestInput(inData):
-    inData = inData.strip('\n')
-    inData = inData.split('\n')
-    
-    return inData
+        program_list.append(prog)
 
-def loadPuzzleInput():
-    file = open('day7input.txt','r')
+    return program_list
 
-    fileData = [line.strip('\n') for line in file]
 
-    return fileData
+def load_test_input(in_data):
+    in_data = in_data.strip('\n')
+    in_data = in_data.split('\n')
 
-#Program Class definition
+    return in_data
+
+
+def load_puzzle_input():
+    file = open('day7input.txt', 'r')
+
+    file_data = [line.strip('\n') for line in file]
+
+    return file_data
+
+
 class Program():
     def __init__(self, name):
         self.name = name
         self.weight = 0
-        self.carriedWeight = 0
-        self.stoodOn = None #The program that this one is stood on
-        self.holdingUp = [] #The list of programs that this one is holding up
+        self.carried_weight = 0
+        self.stood_on = None  # The program that this one is stood on
+        self.holding_up = []  # The list of programs that this one is holding up
 
     @property
-    def totalWeight(self):
-        return self.weight + self.carriedWeight
+    def total_weight(self):
+        return self.weight + self.carried_weight
 
     def __str__(self):
         return self.name
 
 
-
 if __name__ == '__main__':
-    programMap = buildProgramMap()
+    program_map = build_program_map()
 
-    balanceTowers(programMap)
+    balance_towers(program_map)
