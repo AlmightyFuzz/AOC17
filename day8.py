@@ -70,14 +70,17 @@ def set_register_value(reg, op, value):
     if reg not in REGISTERS:
         REGISTERS[reg] = 0
 
+    global LARGEST_VAL
     if op == 'inc':
         REGISTERS[reg] = REGISTERS[reg] + value
 
-        global LARGEST_VAL
         if REGISTERS[reg] > LARGEST_VAL:
             LARGEST_VAL = REGISTERS[reg]
     elif op == 'dec':
         REGISTERS[reg] = REGISTERS[reg] - value
+
+        if REGISTERS[reg] > LARGEST_VAL:
+            LARGEST_VAL = REGISTERS[reg]
 
 
 def load_test():
