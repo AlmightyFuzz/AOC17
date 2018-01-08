@@ -22,19 +22,34 @@ def digital_plumber(programs_list):
 
         programs[prog_id] = prog_list
 
-    # -Find programs in group 0-
-    group0_programs = [0]
+    # -Find the different groups-
+    groups = []
+    for prog in programs:
+        group = find_group(prog, programs)
 
-    for p_id in group0_programs:
-        p_list = programs[p_id]
+        if prog == 0:
+            print('Num programs in group 0: ', len(group))
+
+        # Compare each group (which is a set) and then add it to the list if new
+        if group not in groups:
+            groups.append(group)
+
+    print('Number of groups: ', len(groups))
+
+
+def find_group(program_num, program_dict):
+    current_group = [program_num]
+
+    for p_id in current_group:
+        p_list = program_dict[p_id]
 
         for p in p_list:
-            if p not in group0_programs:
-                group0_programs.append(p)
+            if p not in current_group:
+                current_group.append(p)
 
-    group0 = set(group0_programs)
-
-    print('Num programs in group 0: ', len(group0))
+    # By casting the list into a set it removes any duplicates and simplifies comparing one
+    # group against another. setA == setB is very fast to compute, even though they are unordered
+    return set(current_group)
 
 
 def load_puzzle():
