@@ -134,7 +134,7 @@ def knot_hash2(in_str):
         else:
             hash_str += hex_val
 
-    print(hash_str)
+    return hash_str
 
 
 if __name__ == '__main__':
@@ -145,4 +145,4 @@ if __name__ == '__main__':
     # knot_hash2('AoC 2017')
     # knot_hash2('1,2,3')
     # knot_hash2('1,2,4')
-    knot_hash2(PUZZLE_LENGTHS)
+    print(knot_hash2(PUZZLE_LENGTHS))
