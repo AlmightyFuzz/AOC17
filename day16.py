@@ -42,9 +42,7 @@ def dance(dancers_str, dance_moves_str):
                 pos_a = dancers.index(move[1])
                 pos_b = dancers.index(move[3])
 
-            prog = dancers[pos_a]
-            dancers[pos_a] = dancers[pos_b]
-            dancers[pos_b] = prog
+            dancers[pos_a], dancers[pos_b] = dancers[pos_b], dancers[pos_a]
 
     return ''.join(dancers)
 
